@@ -1,7 +1,7 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let path = require("path");
-// let mongoose = require("mongoose");
+let mongoose = require("mongoose");
 
 // import User Model from ./models
 let User = require("./models/user.js");
@@ -18,31 +18,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-const MongoClient = require("mongodb").MongoClient;
+// const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URL || "mongodb://localhost:27017/userListTest";
-const client = new MongoClient(uri, {
+
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  connectTimeoutMS: 1000,
 });
 
-client.connect((err) => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-
-const resGood = (res) => {
-  // it seems like app.use(cors()) already doing this?
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header(
-  //   "Access-Control-Allow-Headers",
-  //   "Origin, X-Requested-With, Content-Type, Accept"
-  // );
-  res.sendStatus(200);
-};
+const userListAPI = "/api/userList/";
+console.log("mongoose readyState:" + mongoose.connection.readyState);
 
 // add user
-app.post("/api/userList/", (req, res) => {
+app.post(userListAPI, (req, res) => {
   let newUser = new User(req.body);
   error = newUser.validateSync();
   if (error) {
@@ -56,13 +45,13 @@ app.post("/api/userList/", (req, res) => {
       console.log(err);
       res.status(500).send(err);
     } else {
-      resGood(res);
+      res.sendStatus(200);
     }
   });
 });
 
 // update User
-app.post("/api/userList/:id", (req, res) => {
+app.post(userListAPI + ":id", (req, res) => {
   console.log(req.params);
   console.log(req.body);
   if (req.params.id === null || req.params.id === "") {
@@ -80,14 +69,14 @@ app.post("/api/userList/:id", (req, res) => {
         res.status(500).send(err);
       } else {
         console.log("Updated: " + req.params.id);
-        resGood(res);
+        res.sendStatus(200);
       }
     }
   );
 });
 
 // delete user
-app.delete("/api/userList/:id", (req, res) => {
+app.delete(userListAPI + ":id", (req, res) => {
   console.log(req.params);
   if (req.params.id === null || req.params.id === "") {
     res.status(500).send("Invalid Id");
@@ -100,13 +89,13 @@ app.delete("/api/userList/:id", (req, res) => {
       res.status(500).send(err);
     } else {
       console.log("Removed: " + req.params.id);
-      resGood(res);
+      res.sendStatus(200);
     }
   });
 });
 
 //get users
-app.get("/api/userList/", (req, res) => {
+app.get(userListAPI, (req, res) => {
   // use find() method to return all Users
   User.find((err, result) => {
     if (err) {
@@ -114,7 +103,6 @@ app.get("/api/userList/", (req, res) => {
       res.status(500).send(err);
     } else {
       res.json(result);
-      resGood(res);
     }
   });
 });
