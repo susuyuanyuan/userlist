@@ -1,7 +1,8 @@
 // Action creator
 import axios from "axios";
 const URL =
-  (process.env.SERVER_URL || "http://localhost:5000") + "/api/userList";
+  (process.env.REACT_APP_SERVER_URL || "http://localhost:5000") +
+  "/api/userList";
 console.log(URL);
 
 function requestStart() {
