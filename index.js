@@ -1,30 +1,30 @@
-let express = require('express');
-let bodyParser = require('body-parser');
-let path = require('path');
-let mongoose = require('mongoose');
+let express = require("express");
+let bodyParser = require("body-parser");
+let path = require("path");
+let mongoose = require("mongoose");
 
 // import User Model from ./models
-let User = require('./models/user.js');
-let cors = require('cors');
+let User = require("./models/user.js");
+let cors = require("cors");
 
 // initialize express app
 let app = express();
 
 // configure express app to serve static files
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + "/public"));
 
 // configure express app to parse json content and form data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-var mongoUrl = 'mongodb://localhost:27017/userListTest';
-// connect to mongodb instance where database is testdb
-mongoose.connect(mongoUrl);
-
+const MongoClient = require("mongodb").MongoClient;
+const uri = process.env.MONGODB_URL;
+const mongoose = new MongoClient(uri, { useNewUrlParser: true });
+mongoose.connect();
 
 // add user
-app.post('/api/userList/', (req, res) => {
+app.post("/api/userList/", (req, res) => {
   let newUser = new User(req.body);
   error = newUser.validateSync();
   if (error) {
@@ -41,10 +41,10 @@ app.post('/api/userList/', (req, res) => {
       res.sendStatus(200);
     }
   });
-})
+});
 
 // update User
-app.post('/api/userList/:id', (req, res) => {
+app.post("/api/userList/:id", (req, res) => {
   console.log(req.params);
   console.log(req.body);
   if (req.params.id === null || req.params.id === "") {
@@ -53,7 +53,10 @@ app.post('/api/userList/:id', (req, res) => {
   }
 
   User.findByIdAndUpdate(
-    req.params.id, req.body, { useFindAndModify: true }, function (err, docs) {
+    req.params.id,
+    req.body,
+    { useFindAndModify: true },
+    function (err, docs) {
       if (err) {
         console.log(err);
         res.status(500).send(err);
@@ -61,31 +64,31 @@ app.post('/api/userList/:id', (req, res) => {
         console.log("Updated: " + req.params.id);
         res.sendStatus(200);
       }
-    });
+    }
+  );
 });
 
 // delete user
-app.delete('/api/userList/:id', (req, res) => {
+app.delete("/api/userList/:id", (req, res) => {
   console.log(req.params);
   if (req.params.id === null || req.params.id === "") {
     res.status(500).send("Invalid Id");
     return;
   }
 
-  User.findByIdAndRemove(
-    req.params.id, function (err, docs) {
-      if (err) {
-        console.log(err);
-        res.status(500).send(err);
-      } else {
-        console.log("Removed: " + req.params.id);
-        res.sendStatus(200);
-      }
-    });
+  User.findByIdAndRemove(req.params.id, function (err, docs) {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      console.log("Removed: " + req.params.id);
+      res.sendStatus(200);
+    }
+  });
 });
 
 //get users
-app.get('/api/userList/', (req, res) => {
+app.get("/api/userList/", (req, res) => {
   // use find() method to return all Users
   User.find((err, result) => {
     if (err) {
@@ -99,5 +102,5 @@ app.get('/api/userList/', (req, res) => {
 
 // listen on port 3000
 app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+  console.log("Server listening on port 3000");
 });
