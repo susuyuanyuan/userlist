@@ -31,6 +31,15 @@ client.connect((err) => {
   client.close();
 });
 
+const resGood = (res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.sendStatus(200);
+};
+
 // add user
 app.post("/api/userList/", (req, res) => {
   let newUser = new User(req.body);
@@ -46,7 +55,7 @@ app.post("/api/userList/", (req, res) => {
       console.log(err);
       res.status(500).send(err);
     } else {
-      res.sendStatus(200);
+      resGood(res);
     }
   });
 });
@@ -70,7 +79,7 @@ app.post("/api/userList/:id", (req, res) => {
         res.status(500).send(err);
       } else {
         console.log("Updated: " + req.params.id);
-        res.sendStatus(200);
+        resGood(res);
       }
     }
   );
@@ -90,7 +99,7 @@ app.delete("/api/userList/:id", (req, res) => {
       res.status(500).send(err);
     } else {
       console.log("Removed: " + req.params.id);
-      res.sendStatus(200);
+      resGood(res);
     }
   });
 });
@@ -104,6 +113,7 @@ app.get("/api/userList/", (req, res) => {
       res.status(500).send(err);
     } else {
       res.json(result);
+      resGood(res);
     }
   });
 });
