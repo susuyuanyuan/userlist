@@ -1,7 +1,7 @@
 let express = require("express");
 let bodyParser = require("body-parser");
 let path = require("path");
-let mongoose = require("mongoose");
+// let mongoose = require("mongoose");
 
 // import User Model from ./models
 let User = require("./models/user.js");
