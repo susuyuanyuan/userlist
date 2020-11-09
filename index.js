@@ -32,11 +32,12 @@ client.connect((err) => {
 });
 
 const resGood = (res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+  // it seems like app.use(cors()) already doing this?
+  // res.header("Access-Control-Allow-Origin", "*");
+  // res.header(
+  //   "Access-Control-Allow-Headers",
+  //   "Origin, X-Requested-With, Content-Type, Accept"
+  // );
   res.sendStatus(200);
 };
 
@@ -118,7 +119,9 @@ app.get("/api/userList/", (req, res) => {
   });
 });
 
+var portNum = process.env.PORT || 5000;
+
 // listen on port 3000
-app.listen(3000, () => {
-  console.log("Server listening on port 3000");
+app.listen(portNum, () => {
+  console.log("Server listening on port: " + portNum);
 });
