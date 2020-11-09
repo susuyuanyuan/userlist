@@ -20,8 +20,16 @@ app.use(cors());
 
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URL || "mongodb://localhost:27017/userListTest";
-const mongoose = new MongoClient(uri, { useNewUrlParser: true });
-mongoose.connect();
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+client.connect((err) => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
 
 // add user
 app.post("/api/userList/", (req, res) => {
