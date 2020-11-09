@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const MongoClient = require("mongodb").MongoClient;
-const uri = process.env.MONGODB_URL;
+const uri = process.env.MONGODB_URL || "mongodb://localhost:27017/userListTest";
 const mongoose = new MongoClient(uri, { useNewUrlParser: true });
 mongoose.connect();
 
