@@ -21,6 +21,8 @@ const corsOptions = {
   origin: process.env.CLIENT_ORIGIN || "http://localhost",
 };
 
+console.log("Only allow queries from: " + corsOptions.origin);
+
 // const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URL || "mongodb://localhost:27017/userListTest";
 
