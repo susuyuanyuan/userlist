@@ -164,7 +164,6 @@ class UserList extends Component {
                   }
                   disabled={number === currentPage}
                   onClick={() => this.setState({ currentPage: number })}
-                  style={{ color: "#f3f3f3" }}
                 >
                   {number}
                 </button>
