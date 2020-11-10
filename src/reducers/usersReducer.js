@@ -16,7 +16,6 @@ const usersReducer = (
         isLoading: true,
       };
     case "USER_FETCH_SUCCESS":
-      console.log(action);
       return {
         ...state,
         isLoading: false,

@@ -33,7 +33,6 @@ export function getUsers() {
       .get(URL)
       .then((response) => {
         dispatch(requestSuccess(response.data));
-        console.log(response.data);
       })
       .catch((err) => {
         dispatch(requestFail(err));
