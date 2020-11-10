@@ -16,7 +16,10 @@ app.use(express.static(__dirname + "/public"));
 // configure express app to parse json content and form data
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || "http://localhost",
+};
 
 // const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URL || "mongodb://localhost:27017/userListTest";
@@ -31,7 +34,7 @@ const userListAPI = "/api/userList/";
 console.log("mongoose readyState:" + mongoose.connection.readyState);
 
 // add user
-app.post(userListAPI, (req, res) => {
+app.post(userListAPI, cors(corsOptions), (req, res) => {
   let newUser = new User(req.body);
   error = newUser.validateSync();
   if (error) {
@@ -51,7 +54,7 @@ app.post(userListAPI, (req, res) => {
 });
 
 // update User
-app.post(userListAPI + ":id", (req, res) => {
+app.post(userListAPI + ":id", cors(corsOptions), (req, res) => {
   console.log(req.params);
   console.log(req.body);
   if (req.params.id === null || req.params.id === "") {
@@ -76,7 +79,7 @@ app.post(userListAPI + ":id", (req, res) => {
 });
 
 // delete user
-app.delete(userListAPI + ":id", (req, res) => {
+app.delete(userListAPI + ":id", cors(corsOptions), (req, res) => {
   console.log(req.params);
   if (req.params.id === null || req.params.id === "") {
     res.status(500).send("Invalid Id");
@@ -95,7 +98,7 @@ app.delete(userListAPI + ":id", (req, res) => {
 });
 
 //get users
-app.get(userListAPI, (req, res) => {
+app.get(userListAPI, cors(corsOptions), (req, res) => {
   // use find() method to return all Users
   User.find((err, result) => {
     if (err) {
